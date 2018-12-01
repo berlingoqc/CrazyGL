@@ -3,11 +3,6 @@
 
 namespace ENGINE
 {
-	uchar* MyTexture::GetContent(std::string filename)
-	{
-		uchar*	img = SOIL_load_image(filename.c_str(), &w, &h, &channel, SOIL_LOAD_AUTO);
-		return img;
-	}
 
 	MyTexture::MyTexture(uint wraps, uint wrapt, uint minfilter, uint magfilter, uint imgformat)
 	{
@@ -23,7 +18,13 @@ namespace ENGINE
 
 
 
-	uint MyTexture::GetTexture(std::string filename)
+	uchar* MyTexture::GetContent(std::string filename)
+	{
+		uchar*	img = SOIL_load_image(filename.c_str(), &w, &h, &channel, SOIL_LOAD_AUTO);
+		return img;
+	}
+
+	uint MyTexture::GetTexture(uchar* data)
 	{
 		uint text;
 
@@ -36,17 +37,25 @@ namespace ENGINE
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
 
+		glTexImage2D(GL_TEXTURE_2D, 0, channel, w, h, 0, img_format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture 
+
+		return text;
+	}
+
+	uint MyTexture::GetTexture(std::string filename)
+	{
+	
 		uchar* img = GetContent(filename);
 		if (img == nullptr)
 		{
 			return ERROR_TEXTURE;
 		}
-
-		glTexImage2D(GL_TEXTURE_2D, 0, channel, w, h, 0, img_format, GL_UNSIGNED_BYTE, img);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		uint u = GetTexture(img);
 		SOIL_free_image_data(img);
-		glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture 
-		return text;
+		
+		return u;
 	}
 
 	uint MyTexture::GetTextureSky(std::vector<std::string> faces)
