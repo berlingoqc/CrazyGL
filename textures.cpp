@@ -3,7 +3,9 @@
 
 namespace ENGINE
 {
-
+	inline static bool isPowerOf2(int v) {
+		return (v & (v - 1)) == 0;
+	}
 	MyTexture::MyTexture(uint wraps, uint wrapt, uint minfilter, uint magfilter, uint imgformat)
 	{
 		w = 0;
@@ -37,7 +39,7 @@ namespace ENGINE
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, channel, w, h, 0, img_format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture 
 
@@ -46,7 +48,6 @@ namespace ENGINE
 
 	uint MyTexture::GetTexture(std::string filename)
 	{
-	
 		uchar* img = GetContent(filename);
 		if (img == nullptr)
 		{
@@ -54,7 +55,6 @@ namespace ENGINE
 		}
 		uint u = GetTexture(img);
 		SOIL_free_image_data(img);
-		
 		return u;
 	}
 

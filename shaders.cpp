@@ -2,15 +2,16 @@
 
 namespace ENGINE {
 	bool MyShader::OpenMyShader(const char* vertexPath, const char* fragmentPath) {
-
 		std::string codeVertex = ReadMyShaderCode(vertexPath);
 		if (codeVertex == "") {
 			return false;
 		}
+		codeVertex = SHADER_VERSION + codeVertex;
 		std::string codeFragment = ReadMyShaderCode(fragmentPath);
 		if (codeFragment == "") {
 			return false;
 		}
+		codeFragment = SHADER_VERSION + codeFragment;
 		std::cout << "Compiling " << vertexPath << std::endl;
 		unsigned int vMyShader = CompileMyShader(codeVertex.c_str(), GL_VERTEX_SHADER, "VERTEX");
 		if (vMyShader == 0) {
@@ -46,24 +47,21 @@ namespace ENGINE {
 	// ReadMyShaderCode lit le code du MyShader depuis son fichier et le retourne
 	std::string MyShader::ReadMyShaderCode(const char * filePath) {
 		std::ifstream file;
-		file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-		try {
-			// ouvre les fichier
-			file.open(filePath);
-
-			// lit l'intérieur dans un stream
-			std::stringstream stream;
-			stream << file.rdbuf();
-
-			// close les file handle
-			file.close();
-			return stream.str();
+		// ouvre les fichier
+		file.open(filePath);
+		if (!file.is_open()) {
+			printf("Echec de la lecture du shader %s", filePath);
+			return "";
 		}
-		catch (std::ifstream::failure e) {
-			strcpy(ErrorMessage, "ERROR MyShader file not succesfully read");
-		}
-		return "";
+
+		// lit l'intérieur dans un stream
+		std::stringstream stream;
+		stream << file.rdbuf();
+
+		// close les file handle
+		file.close();
+		return stream.str();
+;
 	}
 	// CompileMyShader compile le MyShader
 	unsigned int MyShader::CompileMyShader(std::string code, GLenum type, std::string nameType) {

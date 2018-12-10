@@ -1,10 +1,11 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include "header.h"
+
 #include <SOIL/SOIL.h>
 #include <vector>
 
-#include "engine.h"
 
 namespace ENGINE
 {

@@ -1,6 +1,8 @@
 #include "mesh.h"
 
+#ifndef EMSCRIPTEN
 #include <GL/glew.h>
+#endif
 #include <SOIL/SOIL.h>
 using namespace Assimp;
 
