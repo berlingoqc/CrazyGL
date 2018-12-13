@@ -36,11 +36,12 @@ namespace ENGINE
 		MyTexture(uint wraps, uint wrapt, uint minfilter, uint magfilter, uint img_format);
 
 		uchar*		GetContent(std::string filepath);
+		uchar*		GetContent(uchar* data, int size);
 
 		uint		GetTexture(uchar* data);
 		uint		GetTexture(std::string filename);
 		uint		GetTextureSky(std::vector<std::string> faces);
-
+		uint		GetTextureSky(std::vector<char*> faces, std::vector<int> sizes);
 		TextureFileInfo getLastTextureInfo() 
 		{
 			return { channel,h,w };

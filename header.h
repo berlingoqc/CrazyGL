@@ -4,6 +4,7 @@
 #ifdef EMSCRIPTEN
 
 #include <emscripten/emscripten.h>
+#include <emscripten/fetch.h>
 #define GLFW_INCLUDE_ES3
 #include <GLFW/glfw3.h>
 #include <GLES3/gl3.h>

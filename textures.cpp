@@ -1,6 +1,5 @@
 #include "textures.h"
 
-
 namespace ENGINE
 {
 	inline static bool isPowerOf2(int v) {
@@ -24,6 +23,12 @@ namespace ENGINE
 	{
 		uchar*	img = SOIL_load_image(filename.c_str(), &w, &h, &channel, SOIL_LOAD_AUTO);
 		return img;
+	}
+
+	uchar* MyTexture::GetContent(uchar* data,int size) {
+		uchar* d = SOIL_load_image_from_memory(data, size, &w, &h, &channel, 4);
+		printf("%d %d %d\n", w, h, channel);
+		return d;
 	}
 
 	uint MyTexture::GetTexture(uchar* data)
@@ -58,6 +63,37 @@ namespace ENGINE
 		return u;
 	}
 
+	uint MyTexture::GetTextureSky(std::vector<char*> faces, std::vector<int> sizes) {
+		GLuint textureID;
+		unsigned char* image;
+
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+		//wrapping
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		//filtering
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+
+		for (GLuint i = 0; i < faces.size(); i++)
+		{
+			image = SOIL_load_image_from_memory((unsigned char*)faces[i], sizes[i], &w, &h, &channel, 4);;
+			if (channel != 4) {
+				printf("Erreur la texture doit avoir 4 channel");
+				return ERROR_TEXTURE;
+			}
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+			SOIL_free_image_data(image);
+		}
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	}
+
 	uint MyTexture::GetTextureSky(std::vector<std::string> faces)
 	{
 		GLuint textureID;
@@ -78,7 +114,12 @@ namespace ENGINE
 		for (GLuint i = 0; i < faces.size(); i++)
 		{
 			image = GetContent(faces[i]);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, channel, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+			if(channel != 4) {
+				printf("Erreur la texture doit avoir 3 channel");
+				SOIL_free_image_data(image);
+				return ERROR_TEXTURE;
+			}
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 			SOIL_free_image_data(image);
 		}
 
