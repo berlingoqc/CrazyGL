@@ -20,11 +20,11 @@ namespace fs = std::experimental::filesystem;
 
 #else
 
-#include <filesystem>
+#include <experimental/filesystem>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-namespace fs = std::filesystem;
+namespace fs = std::experimental::filesystem;
 
 #define SHADER_VERSION "#version 430 core"
 #define END_PROGRAM(code) printf("End of program goodbye\n"); return
@@ -53,7 +53,6 @@ namespace fs = std::filesystem;
 #include <vector>
 
 #include <random>
-
 
 typedef unsigned int uint;
 
