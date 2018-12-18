@@ -92,6 +92,8 @@ namespace ENGINE
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
+
+		return textureID;
 	}
 
 	uint MyTexture::GetTextureSky(std::vector<std::string> faces)

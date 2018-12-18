@@ -1,30 +1,18 @@
 #include "shaders.h"
 
 namespace ENGINE {
-	bool MyShader::OpenMyShader(const char* vertexPath, const char* fragmentPath) {
-		std::string codeVertex = ReadMyShaderCode(vertexPath);
-		if (codeVertex == "") {
-			return false;
-		}
-		codeVertex = SHADER_VERSION + codeVertex;
-		std::string codeFragment = ReadMyShaderCode(fragmentPath);
-		if (codeFragment == "") {
-			return false;
-		}
-		codeFragment = SHADER_VERSION + codeFragment;
-		std::cout << "Compiling " << vertexPath << std::endl;
-		unsigned int vMyShader = CompileMyShader(codeVertex.c_str(), GL_VERTEX_SHADER, "VERTEX");
+	bool ShaderCompiler::CompileShaderProgram(const char* codeVertex, const char* codeFragment) {
+		unsigned int vMyShader = CompileMyShader(codeVertex, GL_VERTEX_SHADER, "VERTEX");
 		if (vMyShader == 0) {
 			return false;
 		}
 
-		std::cout << "Compiling " << fragmentPath << std::endl;
-		unsigned int fMyShader = CompileMyShader(codeFragment.c_str(), GL_FRAGMENT_SHADER, "FRAGMENT");
+		unsigned int fMyShader = CompileMyShader(codeFragment, GL_FRAGMENT_SHADER, "FRAGMENT");
 		if (fMyShader == 0) {
 			return false;
 		}
 
-		// crée le programme de MyShader
+		// crï¿½e le programme de MyShader
 		ID = glCreateProgram();
 		glAttachShader(ID, vMyShader);
 		glAttachShader(ID, fMyShader);
@@ -35,17 +23,31 @@ namespace ENGINE {
 		return s;
 	}
 
-	Shrapper MyShader::GetShaderID() {
+	bool ShaderCompiler::CompileShaderProgram(fs::path vertexPath, fs::path fragmentPath) {
+		std::string codeVertex = ReadMyShaderCode(vertexPath.string().c_str());
+		if (codeVertex == "") {
+			return false;
+		}
+		codeVertex = SHADER_VERSION + codeVertex;
+		std::string codeFragment = ReadMyShaderCode(fragmentPath.string().c_str());
+		if (codeFragment == "") {
+			return false;
+		}
+		codeFragment = SHADER_VERSION + codeFragment;
+		return CompileShaderProgram(codeVertex.c_str(),codeFragment.c_str());
+	}
+
+	Shrapper ShaderCompiler::GetShaderID() {
 		return Shrapper(ID);
 	}
 
-	void MyShader::PrintErrorStack() {
+	void ShaderCompiler::PrintErrorStack() {
 		std::cout << ErrorMessage << std::endl;
 	}
 
 
 	// ReadMyShaderCode lit le code du MyShader depuis son fichier et le retourne
-	std::string MyShader::ReadMyShaderCode(const char * filePath) {
+	std::string ShaderCompiler::ReadMyShaderCode(const char * filePath) {
 		std::ifstream file;
 		// ouvre les fichier
 		file.open(filePath);
@@ -54,7 +56,7 @@ namespace ENGINE {
 			return "";
 		}
 
-		// lit l'intérieur dans un stream
+		// lit l'intï¿½rieur dans un stream
 		std::stringstream stream;
 		stream << file.rdbuf();
 
@@ -64,7 +66,7 @@ namespace ENGINE {
 ;
 	}
 	// CompileMyShader compile le MyShader
-	unsigned int MyShader::CompileMyShader(std::string code, GLenum type, std::string nameType) {
+	unsigned int ShaderCompiler::CompileMyShader(std::string code, GLenum type, std::string nameType) {
 		unsigned int item;
 		int success;
 
@@ -81,7 +83,7 @@ namespace ENGINE {
 		return 0;
 	}
 
-	bool MyShader::CheckCompileErrors(GLuint MyShader, std::string nameType) {
+	bool ShaderCompiler::CheckCompileErrors(GLuint MyShader, std::string nameType) {
 		GLint success;
 		char infoLog[1024];
 		if (nameType != "PROGRAM") {

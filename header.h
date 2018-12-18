@@ -10,21 +10,21 @@
 #include <GLES3/gl3.h>
 
 
-#include <experimental/filesystem>
+#include <filesystem>
 
 #define SHADER_VERSION "#version 300 es"
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 #define END_PROGRAM(code) emscripten_force_exit(code)
 
 #else
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 #define SHADER_VERSION "#version 430 core"
 #define END_PROGRAM(code) printf("End of program goodbye\n"); return

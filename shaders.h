@@ -80,16 +80,19 @@ namespace ENGINE {
 		}
 	};
 
-	class MyShader {
+	class ShaderCompiler {
 
 	private:
 		unsigned int ID;
 		char ErrorMessage[1024];
 	public:
-		MyShader() {}
+		ShaderCompiler() {}
 
-		bool OpenMyShader(const char* vertexPath, const char* fragmentPath);
+		bool CompileShaderProgram(const char* vertData, const char* fragData);
+		bool CompileShaderProgram(fs::path vertexPath, fs::path fragmentPath);
+
 		Shrapper GetShaderID();
+
 		void PrintErrorStack();
 	protected:
 		// ReadMyShaderCode lit le code du MyShader depuis son fichier et le retourne
