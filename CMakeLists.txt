@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-SET(HEADER_FILES  header.h shaders.h textures.h )
+SET(HEADER_FILES  header.h shaders.h textures.h ../yaia/player.h)
 SET(SOURCE_FILES shaders.cpp textures.cpp )
 
 
